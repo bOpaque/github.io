@@ -133,11 +133,11 @@
     const slides = document.querySelectorAll('.slide');
     const dotsContainer = document.getElementById('dotsContainer');
     
-    let isDragging = false, startX, currentTranslate = 0, prevTranslate = 0, animationID, counter = 0;
+    let touchStartX = 0;
+    let touchEndX = 0;
+    let counter = 0;
 
-    // Чтобы мобила не тупила при свайпе
-    container.style.touchAction = 'pan-y';
-
+    // Создание точек
     slides.forEach((_, i) => {
         const dot = document.createElement('span');
         dot.classList.add('dot');
@@ -148,53 +148,53 @@
     const dots = document.querySelectorAll('.dot');
 
     function update() {
-        slider.style.transition = 'transform 0.4s cubic-bezier(0.25, 1, 0.5, 1)';
+        slider.style.transition = 'transform 0.4s ease-out';
         slider.style.transform = `translateX(${-100 * counter}%)`;
         dots.forEach((d, i) => d.classList.toggle('active', i === counter));
-        prevTranslate = -counter * container.offsetWidth;
     }
 
-    document.getElementById('nextBtn').onclick = () => { counter = (counter + 1) % slides.length; update(); };
-    document.getElementById('prevBtn').onclick = () => { counter = (counter - 1 + slides.length) % slides.length; update(); };
+    // Кнопки
+    document.getElementById('nextBtn').onclick = () => { 
+        counter = (counter + 1) % slides.length; 
+        update(); 
+    };
+    document.getElementById('prevBtn').onclick = () => { 
+        counter = (counter - 1 + slides.length) % slides.length; 
+        update(); 
+    };
 
-    container.addEventListener('mousedown', dragStart);
-    container.addEventListener('touchstart', dragStart, {passive: true});
-    window.addEventListener('mouseup', dragEnd);
-    window.addEventListener('touchend', dragEnd);
-    window.addEventListener('mousemove', dragAction);
-    window.addEventListener('touchmove', dragAction, {passive: false});
-
-    function dragStart(e) {
-        isDragging = true;
-        startX = e.type.includes('mouse') ? e.pageX : e.touches[0].clientX;
-        slider.style.transition = 'none';
-        animationID = requestAnimationFrame(animation);
-    }
-
-    function dragAction(e) {
-        if (!isDragging) return;
-        const x = e.type.includes('mouse') ? e.pageX : e.touches[0].clientX;
-        currentTranslate = prevTranslate + x - startX;
-    }
-
-    function dragEnd() {
-        if (!isDragging) return;
-        isDragging = false;
-        cancelAnimationFrame(animationID);
-        const movedBy = currentTranslate - prevTranslate;
-        
-        if (movedBy < -50 && counter < slides.length - 1) counter++;
-        else if (movedBy > 50 && counter > 0) counter--;
-        
-        update();
-    }
-
-    function animation() {
-        if (isDragging) {
-            slider.style.transform = `translateX(${currentTranslate}px)`;
-            requestAnimationFrame(animation);
+    // Логика свайпа
+    function checkDirection() {
+        const threshold = 50; // Минимальная длина свайпа
+        if (touchStartX - touchEndX > threshold) {
+            // Свайп влево -> следующий слайд
+            if (counter < slides.length - 1) {
+                counter++;
+                update();
+            }
+        }
+        if (touchEndX - touchStartX > threshold) {
+            // Свайп вправо -> предыдущий слайд
+            if (counter > 0) {
+                counter--;
+                update();
+            }
         }
     }
+
+    // События для мыши (ПК)
+    container.addEventListener('mousedown', e => touchStartX = e.pageX);
+    container.addEventListener('mouseup', e => {
+        touchEndX = e.pageX;
+        checkDirection();
+    });
+
+    // События для тача (Смартфон)
+    container.addEventListener('touchstart', e => touchStartX = e.changedTouches[0].screenX, {passive: true});
+    container.addEventListener('touchend', e => {
+        touchEndX = e.changedTouches[0].screenX;
+        checkDirection();
+    }, {passive: true});
 </script>
 </body>
 </html>

@@ -3,50 +3,231 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MusicBox — Музыкальный Портал</title>
+    <title>VKMusicBox — Скачать</title>
     <style>
+        /* БАЗОВЫЕ СТИЛИ ДЛЯ СВЕТЛОЙ ТЕМЫ */
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background-color: #0f0f0f; color: #ffffff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; }
-        header { background: #1f1f1f; padding: 20px; text-align: center; border-bottom: 2px solid #333; }
-        .container { max-width: 1000px; margin: 20px auto; padding: 20px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
-        .card { background: #1a1a1a; padding: 15px; border-radius: 8px; border: 1px solid #333; transition: 0.3s; }
-        .card:hover { border-color: #00ff00; }
-        .card h3 { margin-bottom: 10px; color: #00ff00; }
-        footer { text-align: center; padding: 40px; color: #666; font-size: 0.8rem; }
-        .btn { display: inline-block; background: #00ff00; color: #000; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold; margin-top: 10px; }
+        body { 
+            background-color: #f4f7f6; /* Светлый фон */
+            color: #333; 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            line-height: 1.6; 
+        }
+
+        /* ШАПКА */
+        header { 
+            background: #fff; 
+            padding: 20px; 
+            text-align: center; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        header h1 { color: #28527a; font-size: 2rem; text-transform: uppercase; }
+
+        /* ОСНОВНОЙ КОНТЕЙНЕР */
+        .container { 
+            max-width: 900px; 
+            margin: 40px auto; 
+            padding: 0 20px; 
+            text-align: center;
+        }
+
+        /* БЛОК СКАЧИВАНИЯ */
+        .download-section {
+            background: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 40px;
+        }
+        .download-section h2 { margin-bottom: 10px; color: #222; }
+        .download-section p { color: #666; margin-bottom: 30px; }
+
+        /* КНОПКА СКАЧАТЬ */
+        .btn-download { 
+            display: inline-block; 
+            background: #28a745; /* Зеленая кнопка */
+            color: #fff; 
+            padding: 15px 30px; 
+            text-decoration: none; 
+            border-radius: 50px; 
+            font-weight: bold; 
+            font-size: 1.2rem;
+            transition: background 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 6px rgba(40, 167, 69, 0.3);
+        }
+        .btn-download:hover { 
+            background: #218838; 
+            transform: translateY(-2px);
+        }
+        .btn-download:active { transform: translateY(1px); }
+
+        /* ГАЛЕРЕЯ СКРИНШОТОВ */
+        .screenshots-section h3 { margin-bottom: 20px; color: #444; }
+        
+        .gallery-container {
+            position: relative;
+            max-width: 100%;
+            margin: auto;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        /* Слайды (скрыты по умолчанию) */
+        .mySlides { display: none; }
+        .mySlides img { width: 100%; height: auto; display: block; }
+
+        /* Кнопки вперед/назад */
+        .prev, .next {
+            cursor: pointer;
+            position: absolute;
+            top: 50%;
+            width: auto;
+            margin-top: -22px;
+            padding: 16px;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            transition: 0.6s ease;
+            border-radius: 0 3px 3px 0;
+            user-select: none;
+            background-color: rgba(0,0,0,0.3);
+        }
+        .next { right: 0; border-radius: 3px 0 0 3px; }
+        .prev:hover, .next:hover { background-color: rgba(0,0,0,0.8); }
+
+        /* Текст номера слайда (1/3) */
+        .numbertext {
+            color: #f2f2f2;
+            font-size: 12px;
+            padding: 8px 12px;
+            position: absolute;
+            top: 0;
+        }
+
+        /* Точки/кружочки */
+        .dot-container { text-align: center; margin-top: 15px; }
+        .dot {
+            cursor: pointer;
+            height: 15px;
+            width: 15px;
+            margin: 0 2px;
+            background-color: #bbb;
+            border-radius: 50%;
+            display: inline-block;
+            transition: background-color 0.6s ease;
+        }
+        .active, .dot:hover { background-color: #717171; }
+
+        /* Анимация перехода */
+        .fade {
+            animation-name: fade;
+            animation-duration: 1.5s;
+        }
+        @keyframes fade {
+            from {opacity: .4} 
+            to {opacity: 1}
+        }
+
+        /* ПОДВАЛ */
+        footer { 
+            text-align: center; 
+            padding: 30px; 
+            color: #888; 
+            font-size: 0.9rem; 
+            margin-top: auto;
+        }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>MUSICBOX</h1>
-    <p>Твой личный музыкальный архив</p>
+    <h1>VKMUSICBOX</h1>
 </header>
 
 <div class="container">
-    <div class="grid">
-        <div class="card">
-            <h3>Треки</h3>
-            <p>Список последних добавленных композиций.</p>
-            <a href="#" class="btn">Открыть</a>
+    
+    <!-- БЛОК СКАЧИВАНИЯ -->
+    <div class="download-section">
+        <h2>Скачать VKMusicBox</h2>
+        <p>Официальная версия программы для вашего ПК.</p>
+        <!-- ЗАМЕНИ '#' НА РЕАЛЬНУЮ ССЫЛКУ НА ФАЙЛ ПРОГРАММЫ -->
+        <a href="#" class="btn-download">СКАЧАТЬ ПРОГРАММУ</a>
+    </div>
+
+    <!-- БЛОК СКРИНШОТОВ (ГАЛЕРЕЯ) -->
+    <div class="screenshots-section">
+        <h3>Скриншоты интерфейса</h3>
+        
+        <div class="gallery-container">
+            <!-- Слайд 1 -->
+            <div class="mySlides fade">
+                <div class="numbertext">1 / 3</div>
+                <img src="screen1.jpg" alt="Скриншот 1">
+            </div>
+
+            <!-- Слайд 2 -->
+            <div class="mySlides fade">
+                <div class="numbertext">2 / 3</div>
+                <img src="screen2.jpg" alt="Скриншот 2">
+            </div>
+
+            <!-- Слайд 3 -->
+            <div class="mySlides fade">
+                <div class="numbertext">3 / 3</div>
+                <img src="screen3.jpg" alt="Скриншот 3">
+            </div>
+
+            <!-- Кнопки навигации -->
+            <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+            <a class="next" onclick="plusSlides(1)">&#10095;</a>
         </div>
-        <div class="card">
-            <h3>Плейлисты</h3>
-            <p>Твои подборки под любое настроение.</p>
-            <a href="#" class="btn">Смотреть</a>
-        </div>
-        <div class="card">
-            <h3>Альбомы</h3>
-            <p>Полные релизы любимых исполнителей.</p>
-            <a href="#" class="btn">Перейти</a>
+
+        <!-- Точки под галереей -->
+        <div class="dot-container">
+            <span class="dot" onclick="currentSlide(1)"></span> 
+            <span class="dot" onclick="currentSlide(2)"></span> 
+            <span class="dot" onclick="currentSlide(3)"></span> 
         </div>
     </div>
+
 </div>
 
 <footer>
-    &copy; 2026 MusicBox. Все права защищены.
+    &copy; 2026 VKMusicBox. Все права защищены.
 </footer>
+
+<!-- СКРИПТ ДЛЯ РАБОТЫ ГАЛЕРЕИ -->
+<script>
+    let slideIndex = 1;
+    showSlides(slideIndex);
+
+    // Вперед/назад
+    function plusSlides(n) {
+        showSlides(slideIndex += n);
+    }
+
+    // Прямой переход к слайду
+    function currentSlide(n) {
+        showSlides(slideIndex = n);
+    }
+
+    function showSlides(n) {
+        let i;
+        let slides = document.getElementsByClassName("mySlides");
+        let dots = document.getElementsByClassName("dot");
+        if (n > slides.length) {slideIndex = 1}    
+        if (n < 1) {slideIndex = slides.length}
+        for (i = 0; i < slides.length; i++) {
+            slides[i].style.display = "none";  
+        }
+        for (i = 0; i < dots.length; i++) {
+            dots[i].className = dots[i].className.replace(" active", "");
+        }
+        slides[slideIndex-1].style.display = "block";  
+        dots[slideIndex-1].className += " active";
+    }
+</script>
 
 </body>
 </html>

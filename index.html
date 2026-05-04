@@ -7,78 +7,60 @@
     <style>
         :root {
             --primary-color: #007bff;
-            --bg-color: #f4f7f6;
-            --text-color: #333;
+            --bg-light: #fbfbfd;
+            --card-bg: #ffffff;
+            --text-main: #1d1d1f;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body { 
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            padding: 20px;
+            padding: 40px 20px;
+            user-select: none; /* Чтобы текст не выделялся при перетаскивании */
         }
 
-        /* Шапка с кнопкой */
-        .header { 
-            text-align: center;
-            margin-bottom: 40px;
-            margin-top: 40px;
-        }
-
-        .header h1 { 
-            font-size: 3.5rem; 
-            margin-bottom: 25px; 
-            font-weight: 800;
-            color: #000;
-        }
+        .header { text-align: center; margin-bottom: 40px; }
+        .header h1 { font-size: 3rem; margin-bottom: 15px; font-weight: 700; }
 
         .btn-download { 
             background-color: var(--primary-color);
             color: #fff; 
-            padding: 18px 50px; 
+            padding: 14px 36px; 
             text-decoration: none; 
-            font-size: 1.2rem; 
-            border-radius: 50px;
+            font-size: 1.1rem; 
+            border-radius: 25px;
             display: inline-block;
-            font-weight: bold;
-            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+            font-weight: 600;
+            transition: 0.3s;
         }
 
-        .btn-download:hover {
-            background-color: #0056b3;
-            box-shadow: 0 6px 20px rgba(0, 123, 255, 0.5);
-            transform: translateY(-2px);
-        }
-
-        .btn-download:active {
-            transform: translateY(1px);
-        }
-
-        /* Слайдер */
         .slider-container {
             position: relative;
-            max-width: 1000px; /* Ширина слайдера */
+            max-width: 900px;
             width: 100%;
-            margin: 0 auto;
+            cursor: grab; /* Курсор в виде руки */
         }
+        
+        .slider-container:active { cursor: grabbing; }
 
         .slider-wrapper {
             overflow: hidden;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            background: #fff;
+            border-radius: 20px;
+            background: var(--card-bg);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
         }
 
         .slider {
             display: flex;
-            transition: transform 0.5s ease-in-out; /* ПЛАВНАЯ АНИМАЦИЯ */
+            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+            will-change: transform;
         }
 
         .slide {
@@ -86,180 +68,129 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            pointer-events: none; /* Чтобы картинка не мешала перетаскиванию */
         }
 
         .slide img { 
-            width: 100%; 
-            height: auto;
-            display: block; 
+            max-width: 100%;
+            max-height: 550px;
+            display: block;
+            object-fit: contain;
         }
 
-        /* Кнопки навигации (ВЫНЕСЕНЫ НАРУЖУ) */
         .prev, .next { 
-            cursor: pointer; 
-            position: absolute; 
-            top: 50%; 
-            transform: translateY(-50%);
-            width: 50px;
-            height: 50px;
-            color: var(--primary-color); 
-            background: #fff; 
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 24px;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            user-select: none;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            border: 1px solid #eee;
-            z-index: 10;
+            cursor: pointer; position: absolute; top: 50%; 
+            transform: translateY(-50%); width: 48px; height: 48px;
+            background: rgba(255, 255, 255, 0.9); border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1); z-index: 10;
         }
 
-        .next { right: -70px; } /* Вынос за пределы справа */
-        .prev { left: -70px; }  /* Вынос за пределы слева */
+        .next { right: -24px; }
+        .prev { left: -24px; }
 
-        .prev:hover, .next:hover { 
-            background-color: var(--primary-color);
-            color: #fff;
-            box-shadow: 0 6px 15px rgba(0, 123, 255, 0.4);
-        }
-
-        /* Адаптив для кнопок: если экран узкий, возвращаем их внутрь */
-        @media (max-width: 1160px) {
-            .next { right: 15px; }
-            .prev { left: 15px; }
-            .prev, .next {
-                background: rgba(255, 255, 255, 0.7);
-            }
-        }
-
-        /* Точки пагинации */
-        .dots-container {
-            text-align: center;
-            margin-top: 20px;
-        }
-
+        .dots-container { text-align: center; margin-top: 25px; }
         .dot {
-            cursor: pointer;
-            height: 12px;
-            width: 12px;
-            margin: 0 5px;
-            background-color: #bbb;
-            border-radius: 50%;
-            display: inline-block;
-            transition: background-color 0.3s ease, transform 0.3s ease;
+            height: 8px; width: 8px; margin: 0 5px;
+            background-color: #d2d2d7; border-radius: 50%;
+            display: inline-block; transition: 0.3s;
         }
+        .dot.active { background-color: #86868b; transform: scale(1.2); }
 
-        .dot.active, .dot:hover {
-            background-color: var(--primary-color);
-            transform: scale(1.2);
+        @media (max-width: 1000px) {
+            .next { right: 10px; }
+            .prev { left: 10px; }
         }
-
     </style>
 </head>
 <body>
 
     <div class="header">
         <h1>VKMusicBox</h1>
-        <!-- СЮДА ВСТАВЬ СВОЮ ССЫЛКУ -->
-        <a href="СЮДА_ВСТАВЛЯЙ_ССЫЛКУ" class="btn-download">Скачать бесплатно</a>
+        <a href="СЮДА_ВСТАВЛЯЙ_ССЫЛКУ" class="btn-download">Скачать</a>
     </div>
 
-    <div class="slider-container">
+    <div class="slider-container" id="container">
         <div class="slider-wrapper">
             <div class="slider" id="slider">
-                <div class="slide"><img src="1.png" alt="Скриншот 1"></div>
-                <div class="slide"><img src="2.png" alt="Скриншот 2"></div>
-                <div class="slide"><img src="3.png" alt="Скриншот 3"></div>
-                <div class="slide"><img src="4.png" alt="Скриншот 4"></div>
-                <div class="slide"><img src="5.png" alt="Скриншот 5"></div>
-                <div class="slide"><img src="6.png" alt="Скриншот 6"></div>
+                <div class="slide"><img src="1.png"></div>
+                <div class="slide"><img src="2.png"></div>
+                <div class="slide"><img src="3.png"></div>
+                <div class="slide"><img src="4.png"></div>
+                <div class="slide"><img src="5.png"></div>
+                <div class="slide"><img src="6.png"></div>
             </div>
         </div>
-
-        <!-- Кнопки вынесены из slider-wrapper -->
-        <a class="prev" id="prevBtn">&#10094;</a>
-        <a class="next" id="nextBtn">&#10095;</a>
+        <div class="prev" id="prevBtn">&#10094;</div>
+        <div class="next" id="nextBtn">&#10095;</div>
     </div>
 
-    <div class="dots-container" id="dotsContainer">
-        <!-- Точки добавятся скриптом -->
-    </div>
+    <div class="dots-container" id="dotsContainer"></div>
 
     <script>
+        const container = document.getElementById('container');
         const slider = document.getElementById('slider');
         const slides = document.querySelectorAll('.slide');
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
         const dotsContainer = document.getElementById('dotsContainer');
+        
+        let isDragging = false, startX, currentTranslate = 0, prevTranslate = 0, animationID, counter = 0;
 
-        let counter = 0;
-        const size = 100; // Процент смещения (100% ширины слайда)
-        const totalSlides = slides.length;
-
-        // Инициализация точек
-        for (let i = 0; i < totalSlides; i++) {
+        // Создание точек
+        slides.forEach((_, i) => {
             const dot = document.createElement('span');
             dot.classList.add('dot');
             if (i === 0) dot.classList.add('active');
-            dot.setAttribute('data-index', i);
             dotsContainer.appendChild(dot);
-        }
-
+        });
         const dots = document.querySelectorAll('.dot');
 
-        function updateSlider() {
-            slider.style.transform = 'translateX(' + (-size * counter) + '%)';
-            // Обновление активной точки
-            dots.forEach(dot => dot.classList.remove('active'));
-            dots[counter].classList.add('active');
+        function update() {
+            slider.style.transition = 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)';
+            slider.style.transform = `translateX(${-100 * counter}%)`;
+            dots.forEach((d, i) => d.classList.toggle('active', i === counter));
+            prevTranslate = -counter * container.offsetWidth;
         }
 
-        nextBtn.addEventListener('click', () => {
-            if (counter >= totalSlides - 1) {
-                counter = 0; // Зацикливание: переход к первому
-            } else {
-                counter++;
+        // Кнопки
+        document.getElementById('nextBtn').onclick = () => { counter = (counter + 1) % slides.length; update(); };
+        document.getElementById('prevBtn').onclick = () => { counter = (counter - 1 + slides.length) % slides.length; update(); };
+
+        // Мышь и тач
+        container.onmousedown = dragStart;
+        container.ontouchstart = dragStart;
+        window.onmouseup = dragEnd;
+        window.ontouchend = dragEnd;
+        window.onmousemove = dragAction;
+        window.ontouchmove = dragAction;
+
+        function dragStart(e) {
+            isDragging = true;
+            startX = e.type.includes('mouse') ? e.pageX : e.touches[0].clientX;
+            slider.style.transition = 'none';
+            animationID = requestAnimationFrame(animation);
+        }
+
+        function dragAction(e) {
+            if (!isDragging) return;
+            const currentX = e.type.includes('mouse') ? e.pageX : e.touches[0].clientX;
+            currentTranslate = prevTranslate + currentX - startX;
+        }
+
+        function dragEnd() {
+            isDragging = false;
+            cancelAnimationFrame(animationID);
+            const movedBy = currentTranslate - prevTranslate;
+            if (movedBy < -100 && counter < slides.length - 1) counter++;
+            else if (movedBy > 100 && counter > 0) counter--;
+            update();
+        }
+
+        function animation() {
+            if (isDragging) {
+                slider.style.transform = `translateX(${currentTranslate}px)`;
+                requestAnimationFrame(animation);
             }
-            updateSlider();
-        });
-
-        prevBtn.addEventListener('click', () => {
-            if (counter <= 0) {
-                counter = totalSlides - 1; // Зацикливание: переход к последнему
-            } else {
-                counter--;
-            }
-            updateSlider();
-        });
-
-        // Клик по точкам
-        dots.forEach(dot => {
-            dot.addEventListener('click', (e) => {
-                counter = parseInt(e.target.getAttribute('data-index'));
-                updateSlider();
-            });
-        });
-
-        // Автоматическое переключение (каждые 5 секунд)
-        let autoPlay = setInterval(() => {
-            nextBtn.click();
-        }, 5000);
-
-        // Остановка автоплея при наведении мыши на слайдер
-        document.querySelector('.slider-container').addEventListener('mouseenter', () => {
-            clearInterval(autoPlay);
-        });
-
-        // Возобновление автоплея при уходе мыши
-        document.querySelector('.slider-container').addEventListener('mouseleave', () => {
-            autoPlay = setInterval(() => {
-                nextBtn.click();
-            }, 5000);
-        });
-
+        }
     </script>
 </body>
 </html>

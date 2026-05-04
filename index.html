@@ -41,10 +41,9 @@
             transition: 0.3s;
         }
 
-        /* Главный контейнер для контента */
         .main-content {
             display: flex;
-            flex-direction: row; /* На ПК в ряд */
+            flex-direction: row;
             gap: 40px;
             max-width: 1200px;
             width: 100%;
@@ -52,12 +51,12 @@
             margin-top: 20px;
         }
 
-        /* Слайдер */
         .slider-container {
             position: relative;
-            flex: 1.2; /* Слайдер чуть шире текста */
+            flex: 1.2;
             width: 100%;
             cursor: grab;
+            user-select: none;
         }
         
         .slider-wrapper {
@@ -84,6 +83,8 @@
             max-height: 550px;
             display: block;
             object-fit: contain;
+            pointer-events: none; /* Чтобы не мешали свайпам */
+            -webkit-user-drag: none;
         }
 
         .prev, .next { 
@@ -96,7 +97,6 @@
         .next { right: 10px; }
         .prev { left: 10px; }
 
-        /* Текстовый блок */
         .description {
             flex: 1;
             padding: 20px;
@@ -137,10 +137,10 @@
             height: 8px; width: 8px; margin: 0 5px;
             background-color: #d2d2d7; border-radius: 50%;
             display: inline-block; transition: 0.3s;
+            cursor: pointer;
         }
         .dot.active { background-color: #86868b; transform: scale(1.2); }
 
-        /* Адаптив: на мобилках всё в колонку */
         @media (max-width: 900px) {
             .main-content {
                 flex-direction: column;
@@ -159,7 +159,6 @@
     </div>
 
     <div class="main-content">
-        <!-- Слайдер -->
         <div class="slider-container" id="container">
             <div class="slider-wrapper">
                 <div class="slider" id="slider">
@@ -176,7 +175,6 @@
             <div class="dots-container" id="dotsContainer"></div>
         </div>
 
-<!-- Описание -->
         <div class="description">
             <h2>Возможности программы</h2>
             <ul class="features-list">
@@ -242,9 +240,14 @@
         }
     }
 
-    container.addEventListener('mousedown', e => touchStartX = e.pageX);
+    container.addEventListener('mousedown', e => {
+        touchStartX = e.pageX;
+        container.style.cursor = 'grabbing';
+    });
+    
     container.addEventListener('mouseup', e => {
         touchEndX = e.pageX;
+        container.style.cursor = 'grab';
         checkDirection();
     });
 

@@ -2,76 +2,264 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VKMusicBox</title>
     <style>
+        :root {
+            --primary-color: #007bff;
+            --bg-color: #f4f7f6;
+            --text-color: #333;
+        }
+
         * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body { 
-            background: linear-gradient(180deg, #ffffff 0%, #cfcfcf 100%);
-            color: #000; 
-            font-family: sans-serif; 
-            text-align: center; 
-            min-height: 100vh;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
         }
-        .header { padding: 60px 20px; }
-        .header h1 { font-size: 3rem; margin-bottom: 20px; }
+
+        /* Шапка с кнопкой */
+        .header { 
+            text-align: center;
+            margin-bottom: 40px;
+            margin-top: 40px;
+        }
+
+        .header h1 { 
+            font-size: 3.5rem; 
+            margin-bottom: 25px; 
+            font-weight: 800;
+            color: #000;
+        }
+
         .btn-download { 
-            background: #007bff; 
+            background-color: var(--primary-color);
             color: #fff; 
-            padding: 20px 45px; 
+            padding: 18px 50px; 
             text-decoration: none; 
-            font-size: 1.5rem; 
-            border-radius: 10px;
+            font-size: 1.2rem; 
+            border-radius: 50px;
             display: inline-block;
             font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
         }
-        .gallery { 
-            max-width: 800px; 
-            margin: 20px auto; 
-            position: relative; 
+
+        .btn-download:hover {
+            background-color: #0056b3;
+            box-shadow: 0 6px 20px rgba(0, 123, 255, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .btn-download:active {
+            transform: translateY(1px);
+        }
+
+        /* Слайдер */
+        .slider-container {
+            position: relative;
+            max-width: 1000px; /* Ширина слайдера */
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .slider-wrapper {
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             background: #fff;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
         }
-        .slide { display: none; }
-        .slide img { width: 100%; display: block; }
+
+        .slider {
+            display: flex;
+            transition: transform 0.5s ease-in-out; /* ПЛАВНАЯ АНИМАЦИЯ */
+        }
+
+        .slide {
+            min-width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .slide img { 
+            width: 100%; 
+            height: auto;
+            display: block; 
+        }
+
+        /* Кнопки навигации (ВЫНЕСЕНЫ НАРУЖУ) */
         .prev, .next { 
-            cursor: pointer; position: absolute; top: 50%; 
-            padding: 15px; color: white; background: rgba(0,0,0,0.5); 
-            font-weight: bold; margin-top: -25px;
+            cursor: pointer; 
+            position: absolute; 
+            top: 50%; 
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+            color: var(--primary-color); 
+            background: #fff; 
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            user-select: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            border: 1px solid #eee;
+            z-index: 10;
         }
-        .next { right: 0; }
-        .prev { left: 0; }
+
+        .next { right: -70px; } /* Вынос за пределы справа */
+        .prev { left: -70px; }  /* Вынос за пределы слева */
+
+        .prev:hover, .next:hover { 
+            background-color: var(--primary-color);
+            color: #fff;
+            box-shadow: 0 6px 15px rgba(0, 123, 255, 0.4);
+        }
+
+        /* Адаптив для кнопок: если экран узкий, возвращаем их внутрь */
+        @media (max-width: 1160px) {
+            .next { right: 15px; }
+            .prev { left: 15px; }
+            .prev, .next {
+                background: rgba(255, 255, 255, 0.7);
+            }
+        }
+
+        /* Точки пагинации */
+        .dots-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .dot {
+            cursor: pointer;
+            height: 12px;
+            width: 12px;
+            margin: 0 5px;
+            background-color: #bbb;
+            border-radius: 50%;
+            display: inline-block;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .dot.active, .dot:hover {
+            background-color: var(--primary-color);
+            transform: scale(1.2);
+        }
+
     </style>
 </head>
 <body>
+
     <div class="header">
         <h1>VKMusicBox</h1>
-        <a href="СЮДА_ВСТАВЛЯЙ_ССЫЛКУ" class="btn-download">СКАЧАТЬ</a>
+        <!-- СЮДА ВСТАВЬ СВОЮ ССЫЛКУ -->
+        <a href="СЮДА_ВСТАВЛЯЙ_ССЫЛКУ" class="btn-download">Скачать бесплатно</a>
     </div>
-    <div class="gallery">
-        <div class="slide"><img src="1.png"></div>
-        <div class="slide"><img src="2.png"></div>
-        <div class="slide"><img src="3.png"></div>
-        <div class="slide"><img src="4.png"></div>
-        <div class="slide"><img src="5.png"></div>
-        <div class="slide"><img src="6.png"></div>
-        <a class="prev" onclick="move(-1)">&#10094;</a>
-        <a class="next" onclick="move(1)">&#10095;</a>
+
+    <div class="slider-container">
+        <div class="slider-wrapper">
+            <div class="slider" id="slider">
+                <div class="slide"><img src="1.png" alt="Скриншот 1"></div>
+                <div class="slide"><img src="2.png" alt="Скриншот 2"></div>
+                <div class="slide"><img src="3.png" alt="Скриншот 3"></div>
+                <div class="slide"><img src="4.png" alt="Скриншот 4"></div>
+                <div class="slide"><img src="5.png" alt="Скриншот 5"></div>
+                <div class="slide"><img src="6.png" alt="Скриншот 6"></div>
+            </div>
+        </div>
+
+        <!-- Кнопки вынесены из slider-wrapper -->
+        <a class="prev" id="prevBtn">&#10094;</a>
+        <a class="next" id="nextBtn">&#10095;</a>
     </div>
+
+    <div class="dots-container" id="dotsContainer">
+        <!-- Точки добавятся скриптом -->
     </div>
-    </div>
+
     <script>
-        let idx = 1;
-        show(idx);
-        function move(n) { show(idx += n); }
-        function show(n) {
-            let s = document.getElementsByClassName("slide");
-            if (n > s.length) idx = 1;
-            if (n < 1) idx = s.length;
-            for (let i = 0; i < s.length; i++) s[i].style.display = "none";
-            if(s[idx-1]) s[idx-1].style.display = "block";
+        const slider = document.getElementById('slider');
+        const slides = document.querySelectorAll('.slide');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const dotsContainer = document.getElementById('dotsContainer');
+
+        let counter = 0;
+        const size = 100; // Процент смещения (100% ширины слайда)
+        const totalSlides = slides.length;
+
+        // Инициализация точек
+        for (let i = 0; i < totalSlides; i++) {
+            const dot = document.createElement('span');
+            dot.classList.add('dot');
+            if (i === 0) dot.classList.add('active');
+            dot.setAttribute('data-index', i);
+            dotsContainer.appendChild(dot);
         }
+
+        const dots = document.querySelectorAll('.dot');
+
+        function updateSlider() {
+            slider.style.transform = 'translateX(' + (-size * counter) + '%)';
+            // Обновление активной точки
+            dots.forEach(dot => dot.classList.remove('active'));
+            dots[counter].classList.add('active');
+        }
+
+        nextBtn.addEventListener('click', () => {
+            if (counter >= totalSlides - 1) {
+                counter = 0; // Зацикливание: переход к первому
+            } else {
+                counter++;
+            }
+            updateSlider();
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (counter <= 0) {
+                counter = totalSlides - 1; // Зацикливание: переход к последнему
+            } else {
+                counter--;
+            }
+            updateSlider();
+        });
+
+        // Клик по точкам
+        dots.forEach(dot => {
+            dot.addEventListener('click', (e) => {
+                counter = parseInt(e.target.getAttribute('data-index'));
+                updateSlider();
+            });
+        });
+
+        // Автоматическое переключение (каждые 5 секунд)
+        let autoPlay = setInterval(() => {
+            nextBtn.click();
+        }, 5000);
+
+        // Остановка автоплея при наведении мыши на слайдер
+        document.querySelector('.slider-container').addEventListener('mouseenter', () => {
+            clearInterval(autoPlay);
+        });
+
+        // Возобновление автоплея при уходе мыши
+        document.querySelector('.slider-container').addEventListener('mouseleave', () => {
+            autoPlay = setInterval(() => {
+                nextBtn.click();
+            }, 5000);
+        });
+
     </script>
 </body>
 </html>

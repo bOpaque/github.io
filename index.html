@@ -10,6 +10,7 @@
             --bg-light: #fbfbfd;
             --card-bg: #ffffff;
             --text-main: #1d1d1f;
+            --text-secondary: #424245;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -18,12 +19,11 @@
             background-color: var(--bg-light);
             color: var(--text-main);
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            min-height: 100vh;
+            padding: 40px 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-height: 100vh;
-            padding: 40px 20px;
-            user-select: none; /* Чтобы текст не выделялся при перетаскивании */
         }
 
         .header { text-align: center; margin-bottom: 40px; }
@@ -41,15 +41,25 @@
             transition: 0.3s;
         }
 
+        /* Главный контейнер для контента */
+        .main-content {
+            display: flex;
+            flex-direction: row; /* На ПК в ряд */
+            gap: 40px;
+            max-width: 1200px;
+            width: 100%;
+            align-items: flex-start;
+            margin-top: 20px;
+        }
+
+        /* Слайдер */
         .slider-container {
             position: relative;
-            max-width: 900px;
+            flex: 1.2; /* Слайдер чуть шире текста */
             width: 100%;
-            cursor: grab; /* Курсор в виде руки */
+            cursor: grab;
         }
         
-        .slider-container:active { cursor: grabbing; }
-
         .slider-wrapper {
             overflow: hidden;
             border-radius: 20px;
@@ -59,8 +69,7 @@
 
         .slider {
             display: flex;
-            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
-            will-change: transform;
+            transition: transform 0.4s ease-out;
         }
 
         .slide {
@@ -68,7 +77,6 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            pointer-events: none; /* Чтобы картинка не мешала перетаскиванию */
         }
 
         .slide img { 
@@ -80,16 +88,51 @@
 
         .prev, .next { 
             cursor: pointer; position: absolute; top: 50%; 
-            transform: translateY(-50%); width: 48px; height: 48px;
+            transform: translateY(-50%); width: 40px; height: 40px;
             background: rgba(255, 255, 255, 0.9); border-radius: 50%;
             display: flex; justify-content: center; align-items: center;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1); z-index: 10;
         }
+        .next { right: 10px; }
+        .prev { left: 10px; }
 
-        .next { right: -24px; }
-        .prev { left: -24px; }
+        /* Текстовый блок */
+        .description {
+            flex: 1;
+            padding: 20px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
 
-        .dots-container { text-align: center; margin-top: 25px; }
+        .description h2 { margin-bottom: 20px; font-size: 1.6rem; }
+        
+        .features-list { list-style: none; }
+        .features-list li {
+            position: relative;
+            padding-left: 25px;
+            margin-bottom: 12px;
+            line-height: 1.5;
+            color: var(--text-secondary);
+        }
+        .features-list li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .auth-note {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+        .auth-note strong { color: var(--text-main); }
+
+        .dots-container { text-align: center; margin-top: 20px; }
         .dot {
             height: 8px; width: 8px; margin: 0 5px;
             background-color: #d2d2d7; border-radius: 50%;
@@ -97,9 +140,14 @@
         }
         .dot.active { background-color: #86868b; transform: scale(1.2); }
 
-        @media (max-width: 1000px) {
-            .next { right: 10px; }
-            .prev { left: 10px; }
+        /* Адаптив: на мобилках всё в колонку */
+        @media (max-width: 900px) {
+            .main-content {
+                flex-direction: column;
+                align-items: center;
+            }
+            .header h1 { font-size: 2.2rem; }
+            .description { width: 100%; }
         }
     </style>
 </head>
@@ -107,25 +155,47 @@
 
     <div class="header">
         <h1>VKMusicBox</h1>
-        <a href="СЮДА_ВСТАВЛЯЙ_ССЫЛКУ" class="btn-download">Скачать</a>
+        <a href="СЮДА_ВСТАВЛЯЙ_ССЫЛКУ" class="btn-download">Скачать бесплатно</a>
     </div>
 
-    <div class="slider-container" id="container">
-        <div class="slider-wrapper">
-            <div class="slider" id="slider">
-                <div class="slide"><img src="1.png"></div>
-                <div class="slide"><img src="2.png"></div>
-                <div class="slide"><img src="3.png"></div>
-                <div class="slide"><img src="4.png"></div>
-                <div class="slide"><img src="5.png"></div>
-                <div class="slide"><img src="6.png"></div>
+    <div class="main-content">
+        <!-- Слайдер -->
+        <div class="slider-container" id="container">
+            <div class="slider-wrapper">
+                <div class="slider" id="slider">
+                    <div class="slide"><img src="1.png"></div>
+                    <div class="slide"><img src="2.png"></div>
+                    <div class="slide"><img src="3.png"></div>
+                    <div class="slide"><img src="4.png"></div>
+                    <div class="slide"><img src="5.png"></div>
+                    <div class="slide"><img src="6.png"></div>
+                </div>
+            </div>
+            <div class="prev" id="prevBtn">&#10094;</div>
+            <div class="next" id="nextBtn">&#10095;</div>
+            <div class="dots-container" id="dotsContainer"></div>
+        </div>
+
+<!-- Описание -->
+        <div class="description">
+            <h2>Возможности программы</h2>
+            <ul class="features-list">
+                <li>Прослушивание музыки без ограничений и рекламы</li>
+                <li>Поиск по всей базе аудиозаписей ВК</li>
+                <li>Рекомендации на основе ваших прослушиваний</li>
+                <li>Доступ к аудиозаписям друзей (у кого открыт доступ)</li>
+                <li>Получение списка похожих треков для любой песни</li>
+                <li>Создание, удаление плейлистов и добавление в них музыки</li>
+                <li>Кеширование разделов «Мои аудиозаписи» и «Плейлисты»</li>
+                <li>Кеширование обложек и миниатюр (thumbs)</li>
+            </ul>
+
+            <div class="auth-note">
+                <strong>Авторизация через токен</strong><br>
+                Программа работает на токенах Marusia. Вы скармливаете программе токен от своего аккаунта, и она использует его для доступа к музыке. Это позволяет авторизоваться через официальные ключи доступа, не вводя свой пароль в самой программе.
             </div>
         </div>
-        <div class="prev" id="prevBtn">&#10094;</div>
-        <div class="next" id="nextBtn">&#10095;</div>
     </div>
-
-    <div class="dots-container" id="dotsContainer"></div>
 
     <script>
     const container = document.getElementById('container');
@@ -137,7 +207,6 @@
     let touchEndX = 0;
     let counter = 0;
 
-    // Создание точек
     slides.forEach((_, i) => {
         const dot = document.createElement('span');
         dot.classList.add('dot');
@@ -153,7 +222,6 @@
         dots.forEach((d, i) => d.classList.toggle('active', i === counter));
     }
 
-    // Кнопки
     document.getElementById('nextBtn').onclick = () => { 
         counter = (counter + 1) % slides.length; 
         update(); 
@@ -163,38 +231,27 @@
         update(); 
     };
 
-    // Логика свайпа
     function checkDirection() {
-        const threshold = 50; // Минимальная длина свайпа
+        const threshold = 50;
         if (touchStartX - touchEndX > threshold) {
-            // Свайп влево -> следующий слайд
-            if (counter < slides.length - 1) {
-                counter++;
-                update();
-            }
+            if (counter < slides.length - 1) { counter++; update(); }
         }
         if (touchEndX - touchStartX > threshold) {
-            // Свайп вправо -> предыдущий слайд
-            if (counter > 0) {
-                counter--;
-                update();
-            }
+            if (counter > 0) { counter--; update(); }
         }
     }
 
-    // События для мыши (ПК)
     container.addEventListener('mousedown', e => touchStartX = e.pageX);
     container.addEventListener('mouseup', e => {
         touchEndX = e.pageX;
         checkDirection();
     });
 
-    // События для тача (Смартфон)
     container.addEventListener('touchstart', e => touchStartX = e.changedTouches[0].screenX, {passive: true});
     container.addEventListener('touchend', e => {
         touchEndX = e.changedTouches[0].screenX;
         checkDirection();
     }, {passive: true});
-</script>
+    </script>
 </body>
 </html>
